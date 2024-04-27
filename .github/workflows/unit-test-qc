@@ -83,6 +83,15 @@ jobs:
         with:
           name: code-coverage-report
           path: target/site/jacoco/index.html
+
+      - name: Check Code Coverage Threshold
+        run: |
+          threshold=$(awk -F'[<>]' '/
+          counter value=""/{print $3}' target/site/jacoco/index.html)
+          if [[ "$threshold" -lt "80" ]]; then
+          echo "Code coverage is below threshold. Exiting..."
+          exit 1
+          fi
           
   install:
     needs: [build_and_test_and_deploy]
